@@ -22,8 +22,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("应用启动中...")
         
-        // 隐藏 Dock 图标
-        NSApp.setActivationPolicy(.accessory)
+        // 显示 Dock 图标（配合状态栏图标）
+        NSApp.setActivationPolicy(.regular)
         
         // 创建菜单栏图标
         setupMenuBar()
@@ -77,7 +77,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let hostingView = NSHostingView(rootView: settingsView)
             
             settingsWindow = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 400, height: 400),
+                contentRect: NSRect(x: 0, y: 0, width: 420, height: 520),
                 styleMask: [.titled, .closable, .miniaturizable],
                 backing: .buffered,
                 defer: false
