@@ -1,2 +1,4 @@
 .buildcache/
 build
+dist
+*.dmg

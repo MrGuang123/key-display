@@ -244,31 +244,45 @@ struct KeyDisplayView: View {
     
     var body: some View {
         let height = max(64, settings.fontSize + 32)
+        let showPlaceholder = settings.alwaysShow && keyDisplayManager.keys.isEmpty
+        let showContainer = showPlaceholder || !keyDisplayManager.keys.isEmpty
         
-        Group {
-            if !keyDisplayManager.keys.isEmpty {
-                HStack(spacing: 12) {
-                    ForEach(keyDisplayManager.keys) { keyItem in
-                        KeyItemView(keyName: keyItem.name)
+        if showContainer {
+            Group {
+                if !keyDisplayManager.keys.isEmpty {
+                    HStack(spacing: 12) {
+                        ForEach(keyDisplayManager.keys) { keyItem in
+                            KeyItemView(keyName: keyItem.name)
+                        }
                     }
+                    .padding(.horizontal, 16)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                } else {
+                    // 常驻模式下保持容器可见，即便当前没有按键
+                    HStack {
+                        Text("等待按键…")
+                            .font(.system(size: settings.fontSize * 0.8, weight: .medium))
+                            .foregroundColor(.secondary)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 16)
+                    .frame(maxWidth: .infinity, maxHeight: height, alignment: .leading)
                 }
-                .padding(.horizontal, 16)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-            } else {
-                Color.clear
-                    .frame(maxHeight: height)
             }
+            .frame(width:370, height: height)
+            .background(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(Color.black.opacity(0.08))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .stroke(Color.black.opacity(0.12), lineWidth: 1)
+                    )
+            )
+            .animation(.easeOut(duration: 0.2), value: keyDisplayManager.keys.map { $0.id })
+        } else {
+            // 非常驻且无按键时完全隐藏容器
+            Color.clear
         }
-        .frame(width:370, height: height)
-        .background(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(Color.black.opacity(0.08))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .stroke(Color.black.opacity(0.12), lineWidth: 1)
-                )
-        )
-        .animation(.easeOut(duration: 0.2), value: keyDisplayManager.keys.map { $0.id })
     }
 }
 
